@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+@theme {
+  --color-night: #060b14;
+  --color-panel: #0b1322;
+  --color-panel-2: #101b2e;
+  --color-line: #1e2c46;
+  --color-snow: #e8eef8;
+  --color-mute: #8ea0b8;
+  --color-accent: #38bdf8;
+  --color-violet-glow: #6366f1;
+}
+
+@theme inline {
+  --font-sans: var(--font-noto), "Apple SD Gothic Neo", "Malgun Gothic",
+    sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-night);
+  color: var(--color-snow);
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+/* --- decorative backgrounds ------------------------------------------ */
+
+.bg-grid {
+  background-image: linear-gradient(
+      to right,
+      rgb(148 163 184 / 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgb(148 163 184 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+.gradient-text {
+  background: linear-gradient(100deg, #7dd3fc 0%, #38bdf8 40%, #818cf8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.card-glass {
+  background: linear-gradient(
+    180deg,
+    rgb(16 27 46 / 0.85),
+    rgb(11 19 34 / 0.85)
+  );
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(12px);
+}
+
+/* --- entrance animations ---------------------------------------------- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero {
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero,
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --- hero dashboard mock ---------------------------------------------- */
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.scan-line {
+  animation: scan 4.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .scan-line,
+  .animate-pulse-dot {
+    animation: none;
+  }
+  .scan-line {
+    display: none;
+  }
+}
+
+/* --- FAQ accordion ------------------------------------------------------ */
+
+details.faq summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq summary .faq-icon {
+  transition: transform 0.25s ease;
+}
+
+details.faq[open] summary .faq-icon {
+  transform: rotate(45deg);
+}
