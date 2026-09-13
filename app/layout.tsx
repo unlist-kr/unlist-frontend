@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,9 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
 });
-
-const PRETENDARD_CSS =
-  "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
 
 export const metadata: Metadata = {
   title: "언리스트 Unlist — 노출된 내 사업 정보, 대신 지워드립니다",
@@ -50,10 +48,6 @@ export default function RootLayout({
       lang="ko"
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
-        <link rel="stylesheet" href={PRETENDARD_CSS} />
-      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
