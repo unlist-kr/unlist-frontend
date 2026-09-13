@@ -547,59 +547,71 @@ function Pricing() {
 
         <div className="mx-auto mt-14 grid max-w-4xl gap-5 lg:grid-cols-2">
           <Reveal delay={0}>
-            <div className="card h-full rounded-2xl p-8">
-              <h3 className="text-lg font-semibold">1회 클린업</h3>
-              <p className="mt-1.5 text-sm text-mute">지금 떠 있는 정보를 한 번에 정리</p>
+            <div className="card-dark relative h-full rounded-2xl p-8">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">1회 클린업</h3>
+                <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white">
+                  지금 신청 가능
+                </span>
+              </div>
+              <p className="mt-1.5 text-sm text-cream-mute">지금 떠 있는 정보를 한 번에 정리</p>
               <div className="mt-6 flex items-baseline gap-1">
                 <span className="font-mono text-4xl font-bold tracking-tight">9,900</span>
                 <span className="text-base font-semibold">원</span>
               </div>
-              <ul className="mt-7 space-y-3 text-sm text-mute">
-                <PriceItem>전수 스캔</PriceItem>
-                <PriceItem>비공개 요청</PriceItem>
-                <PriceItem>반영 확인</PriceItem>
+              <ul className="mt-7 space-y-3 text-sm text-cream-mute">
+                <PriceItem tone="cream">전수 스캔</PriceItem>
+                <PriceItem tone="cream">비공개 요청</PriceItem>
+                <PriceItem tone="cream">반영 확인</PriceItem>
               </ul>
               <a
-                href="#contact"
-                className="mt-8 block rounded-full border border-ink/20 py-3 text-center text-sm font-semibold text-ink transition-colors hover:border-ink"
+                href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%201%ED%9A%8C%20%ED%81%B4%EB%A6%B0%EC%97%85%20%EC%8B%A0%EC%B2%AD"
+                className="mt-8 block rounded-full bg-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
               >
-                사전 등록하기
+                지금 신청하기
               </a>
+              <p className="mt-3 text-center text-[11px] text-cream-mute">
+                이메일 접수 후 계좌이체로 결제 · 진단 리포트 먼저 드립니다
+              </p>
             </div>
           </Reveal>
 
           <Reveal delay={100}>
-            <div className="card-dark relative h-full rounded-2xl p-8">
+            <div className="card relative h-full rounded-2xl p-8">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">지속 모니터링</h3>
-                <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white">
-                  추천
+                <span className="rounded-full border border-line bg-paper px-3 py-1 text-xs font-semibold text-mute">
+                  출시 예정
                 </span>
               </div>
-              <p className="mt-1.5 text-sm text-cream-mute">내린 정보가 다시 올라오지 않도록</p>
+              <p className="mt-1.5 text-sm text-mute">내린 정보가 다시 올라오지 않도록</p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-base font-semibold text-cream-mute">월</span>
+                <span className="text-base font-semibold text-mute">월</span>
                 <span className="ml-1 font-mono text-4xl font-bold tracking-tight">4,900</span>
                 <span className="text-base font-semibold">원</span>
+                <span className="ml-1.5 text-sm text-mute">(예정)</span>
               </div>
-              <ul className="mt-7 space-y-3 text-sm text-cream-mute">
-                <PriceItem tone="cream">재스캔</PriceItem>
-                <PriceItem tone="cream">신규 노출 자동 차단</PriceItem>
-                <PriceItem tone="cream">월간 리포트</PriceItem>
+              <ul className="mt-7 space-y-3 text-sm text-mute">
+                <PriceItem>재스캔</PriceItem>
+                <PriceItem>신규 노출 자동 차단</PriceItem>
+                <PriceItem>월간 리포트</PriceItem>
               </ul>
               <a
-                href="#contact"
-                className="mt-8 block rounded-full bg-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+                href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%20%EC%A7%80%EC%86%8D%20%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%20%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC"
+                className="mt-8 block rounded-full border border-ink/20 py-3 text-center text-sm font-semibold text-ink transition-colors hover:border-ink"
               >
-                사전 등록하기
+                출시 알림 받기
               </a>
+              <p className="mt-3 text-center text-[11px] text-mute">
+                1회 클린업 고객에게 출시 시 얼리버드 가격으로 먼저 안내합니다
+              </p>
             </div>
           </Reveal>
         </div>
 
         <Reveal delay={150}>
           <p className="mt-8 text-center text-xs text-mute">
-            기본 진단 기준 · 노출 범위·플랫폼 수에 따라 상이할 수 있습니다.
+            기본 진단 기준 · 노출 범위·플랫폼 수에 따라 상이할 수 있습니다. 지속 모니터링 가격은 출시 시 변경될 수 있습니다.
           </p>
         </Reveal>
       </div>
