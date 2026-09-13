@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Token, Wordmark } from "./brand";
 
 const LINKS = [
   { href: "#problem", label: "왜 필요한가요" },
@@ -25,30 +26,20 @@ export default function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || open
-          ? "bg-night/85 backdrop-blur-md border-b border-line"
+          ? "bg-white/90 backdrop-blur-md border-b border-line"
           : "bg-transparent border-b border-transparent"
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <a href="#top" className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 text-sm font-bold text-night">
-            U
-          </span>
-          <span className="text-lg font-bold tracking-tight">
-            언리스트
-            <span className="ml-1.5 text-xs font-medium text-mute align-middle">
-              UNLIST
-            </span>
-          </span>
+        <a href="#top" className="flex items-center gap-3" aria-label="unlist 홈">
+          <Token size={30} />
+          <Wordmark height={26} className="mt-px" />
         </a>
 
         <ul className="hidden items-center gap-8 text-sm text-mute md:flex">
           {LINKS.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="transition-colors hover:text-snow"
-              >
+              <a href={link.href} className="transition-colors hover:text-ink">
                 {link.label}
               </a>
             </li>
@@ -58,7 +49,7 @@ export default function Nav() {
         <div className="hidden md:block">
           <a
             href="#contact"
-            className="rounded-full bg-snow px-5 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-85"
+            className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-dark-2"
           >
             사전 등록
           </a>
@@ -69,7 +60,7 @@ export default function Nav() {
           aria-label="메뉴 열기"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-snow md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-ink md:hidden"
         >
           <svg
             width="20"
@@ -97,7 +88,7 @@ export default function Nav() {
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-mute transition-colors hover:bg-panel-2 hover:text-snow"
+                  className="block rounded-lg px-3 py-2.5 text-mute transition-colors hover:bg-paper hover:text-ink"
                 >
                   {link.label}
                 </a>
@@ -107,7 +98,7 @@ export default function Nav() {
           <a
             href="#contact"
             onClick={() => setOpen(false)}
-            className="mt-4 block rounded-full bg-snow py-2.5 text-center text-sm font-semibold text-night"
+            className="mt-4 block rounded-full bg-ink py-2.5 text-center text-sm font-semibold text-white"
           >
             사전 등록
           </a>

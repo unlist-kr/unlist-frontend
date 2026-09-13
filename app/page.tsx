@@ -1,5 +1,9 @@
+import Image from "next/image";
 import Nav from "./components/nav";
 import Reveal from "./components/reveal";
+import { Token, WordmarkKr } from "./components/brand";
+import FeaturesExplorer from "./components/features";
+import { DiagnosisMock, SourceBlockMock, MonitorMock } from "./components/step-mocks";
 
 export default function Home() {
   return (
@@ -8,6 +12,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Problem />
+        <SearchAi />
         <HowItWorks />
         <Features />
         <Pricing />
@@ -20,39 +25,47 @@ export default function Home() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Shared                                                              */
+/* ------------------------------------------------------------------ */
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="flex items-center gap-2.5 text-sm font-semibold text-accent">
+      <span className="block h-px w-6 bg-accent" aria-hidden />
+      {children}
+    </p>
+  );
+}
+
+const BTN_PRIMARY =
+  "inline-flex items-center justify-center rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover";
+const BTN_SECONDARY =
+  "inline-flex items-center justify-center rounded-full border border-ink/20 bg-transparent px-7 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-ink";
+
+/* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden pb-24 pt-36 sm:pb-32 sm:pt-44">
-      <div className="bg-grid absolute inset-0" />
-      <div
-        className="glow-orb left-1/2 top-[-180px] h-[420px] w-[640px] -translate-x-1/2"
-        style={{ background: "rgb(56 189 248 / 0.16)" }}
-      />
-      <div
-        className="glow-orb right-[-160px] top-[240px] h-[360px] w-[360px]"
-        style={{ background: "rgb(99 102 241 / 0.14)" }}
-      />
-
-      <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-5 sm:px-8 lg:grid-cols-[1.1fr_1fr]">
+    <section className="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-40">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_1fr]">
         <div>
           <div
-            className="animate-hero inline-flex items-center gap-2 rounded-full border border-line bg-panel px-4 py-1.5 text-xs font-medium text-sky-300"
+            className="animate-hero inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-1.5 text-xs font-medium text-ink"
             style={{ animationDelay: "0ms" }}
           >
-            <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-sky-400" />
+            <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-accent" />
             사전 등록 접수 중 · 얼리버드 혜택
           </div>
 
           <h1
-            className="animate-hero mt-6 text-4xl font-bold leading-[1.2] tracking-tight sm:text-5xl lg:text-[3.4rem]"
+            className="animate-hero mt-6 text-4xl font-bold leading-[1.18] tracking-[-0.03em] sm:text-5xl lg:text-[3.3rem]"
             style={{ animationDelay: "100ms" }}
           >
             인터넷에 흩어진
             <br />
-            <span className="gradient-text">내 사업 정보,</span>
+            <span className="carve-text">내 사업 정보,</span>
             <br />
             대신 지워드립니다
           </h1>
@@ -63,24 +76,18 @@ function Hero() {
           >
             기업정보 공개 사이트에 노출된 대표자 이름, 사업장 주소, 재무
             추정치까지. 언리스트가 사이트별 절차에 맞춰 삭제를 요청하고, 다시
-            올라오지 않도록 매달 감시합니다.
+            올라오지 않도록 24시간 감시합니다.
           </p>
 
           <div
             className="animate-hero mt-9 flex flex-col gap-3 sm:flex-row"
             style={{ animationDelay: "300ms" }}
           >
-            <a
-              href="#contact"
-              className="rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 px-7 py-3.5 text-center text-sm font-semibold text-night shadow-lg shadow-sky-500/25 transition-transform hover:scale-[1.03]"
-            >
+            <a href="#contact" className={BTN_PRIMARY}>
               무료 노출 진단 신청하기
             </a>
-            <a
-              href="#how"
-              className="rounded-full border border-line bg-panel px-7 py-3.5 text-center text-sm font-semibold text-snow transition-colors hover:border-sky-400/40"
-            >
-              서비스 알아보기
+            <a href="#problem" className={BTN_SECONDARY}>
+              실제 노출 화면 보기
             </a>
           </div>
 
@@ -89,7 +96,7 @@ function Hero() {
             style={{ animationDelay: "400ms" }}
           >
             <HeroStat value="30+" label="모니터링 대상 사이트" />
-            <HeroStat value="매월" label="재노출 감시 리포트" />
+            <HeroStat value="24시간" label="재노출 자동 감시" />
             <HeroStat value="100%" label="공식 절차 기반 요청" />
           </div>
         </div>
@@ -98,7 +105,18 @@ function Hero() {
           className="animate-hero relative hidden lg:block"
           style={{ animationDelay: "250ms" }}
         >
-          <DashboardMock />
+          <EvidenceStack />
+        </div>
+
+        <div className="animate-hero lg:hidden" style={{ animationDelay: "250ms" }}>
+          <Shot
+            src="/onepager/pain-1.png"
+            alt="구글 검색 결과의 AI 개요에 특정 병원의 연매출 추정치가 노출된 화면"
+            width={896}
+            height={555}
+            urlLabel="google.com › 성형외과 매출"
+          />
+          <p className="mt-2 text-[11px] text-mute">실제 검색 화면. 개인정보는 흐림 처리했습니다.</p>
         </div>
       </div>
     </section>
@@ -108,87 +126,43 @@ function Hero() {
 function HeroStat({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <div className="font-mono text-2xl font-bold text-snow">{value}</div>
+      <div className="font-mono text-2xl font-bold text-ink">{value}</div>
       <div className="mt-1 text-xs leading-snug text-mute">{label}</div>
     </div>
   );
 }
 
-const MOCK_ROWS = [
-  { site: "기업정보 포털 A", detail: "대표자명 · 주소", status: "done" },
-  { site: "재무정보 플랫폼 B", detail: "매출 추정치", status: "done" },
-  { site: "채용정보 사이트 C", detail: "직원 수 · 연봉 추정", status: "progress" },
-  { site: "상권분석 서비스 D", detail: "사업장 위치", status: "progress" },
-  { site: "기업 DB 사이트 E", detail: "법인 등기 정보", status: "watch" },
-] as const;
-
-const STATUS_STYLE = {
-  done: { label: "삭제 완료", cls: "bg-emerald-400/10 text-emerald-300" },
-  progress: { label: "처리 중", cls: "bg-amber-400/10 text-amber-300" },
-  watch: { label: "모니터링", cls: "bg-sky-400/10 text-sky-300" },
-} as const;
-
-function DashboardMock() {
+/** Real exposure screenshots stacked: Google AI Overview in front, AI chat behind. */
+function EvidenceStack() {
   return (
-    <div className="animate-float relative">
-      <div className="card-glass relative overflow-hidden rounded-2xl p-6 shadow-2xl shadow-black/40">
-        <div
-          className="scan-line absolute left-0 h-px w-full"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgb(56 189 248 / 0.7), transparent)",
-          }}
-        />
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-semibold">내 정보 노출 현황</div>
-            <div className="mt-0.5 text-xs text-mute">
-              이번 달 리포트 · 5개 사이트
-            </div>
-          </div>
-          <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
-            보호 활성화
-          </span>
-        </div>
-
-        <div className="mt-5 space-y-2.5">
-          {MOCK_ROWS.map((row) => {
-            const s = STATUS_STYLE[row.status];
-            return (
-              <div
-                key={row.site}
-                className="flex items-center justify-between rounded-xl border border-line bg-night/60 px-4 py-3"
-              >
-                <div>
-                  <div className="text-sm font-medium">{row.site}</div>
-                  <div className="mt-0.5 text-xs text-mute">{row.detail}</div>
-                </div>
-                <span
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${s.cls}`}
-                >
-                  {s.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-5 flex items-center justify-between rounded-xl bg-gradient-to-r from-sky-400/10 to-indigo-500/10 px-4 py-3.5">
-          <div className="text-xs text-mute">
-            노출 감소율{" "}
-            <span className="ml-1 font-mono text-sm font-bold text-sky-300">
-              80%
-            </span>
-          </div>
-          <div className="text-xs text-mute">
-            다음 스캔까지{" "}
-            <span className="ml-1 font-mono text-sm font-bold text-snow">
-              D-12
-            </span>
-          </div>
-        </div>
+    <div className="relative pb-16 pl-10">
+      <div className="absolute -top-3 right-4 z-20 rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold text-white shadow-[0_12px_24px_-12px_rgba(219,104,69,0.8)]">
+        상호 검색 1회 → 연매출 35억 노출
       </div>
-      <div className="pointer-events-none absolute -bottom-10 left-1/2 h-24 w-4/5 -translate-x-1/2 rounded-full bg-sky-500/20 blur-3xl" />
+      <div className="relative z-10">
+        <Shot
+          src="/onepager/pain-1.png"
+          alt="구글 검색 결과의 AI 개요에 특정 병원의 연매출 추정치가 노출된 화면"
+          width={896}
+          height={555}
+          urlLabel="google.com › 성형외과 매출"
+          className="shadow-[0_40px_80px_-40px_rgba(30,26,23,0.45)]"
+        />
+      </div>
+      <div className="absolute bottom-0 left-0 z-20 w-[58%]">
+        <Shot
+          src="/onepager/aeo-specific.png"
+          alt="ChatGPT가 특정 회사의 2021년부터 2024년까지 연도별 매출액을 표로 답한 화면"
+          width={813}
+          height={615}
+          urlLabel="ChatGPT › ○○ 매출"
+          dark
+          className="shadow-[0_40px_80px_-40px_rgba(30,26,23,0.6)]"
+        />
+      </div>
+      <p className="absolute -bottom-6 right-0 text-[11px] text-mute">
+        실제 검색·AI 화면. 개인정보는 흐림 처리했습니다.
+      </p>
     </div>
   );
 }
@@ -199,59 +173,265 @@ function DashboardMock() {
 
 const PROBLEMS = [
   {
-    icon: "👤",
-    title: "대표자 실명과 연락처",
-    body: "검색 한 번이면 누구나 대표자의 이름과 사업장 연락처를 확인할 수 있어, 원치 않는 영업 전화와 스팸에 그대로 노출됩니다.",
+    no: "1",
+    title: "상호만 검색해도 매출 추정치가 뜬다",
+    body: "부정확한 매출·직원 수 추정치가 검색 결과와 AI 답변에 그대로 노출되어, 거래처 협상·대출 심사·경쟁사 분석에 불리하게 작용합니다.",
+    img: "/onepager/pain-1.png",
+    alt: "구글 검색 결과의 AI 개요에 특정 병원의 연매출 추정치가 노출된 화면",
+    w: 896,
+    h: 555,
   },
   {
-    icon: "📍",
-    title: "사업장 주소 공개",
-    body: "자택 겸 사업장인 개인사업자의 경우, 집 주소가 사실상 공개되는 것과 같습니다. 신변 안전 문제로 이어질 수 있습니다.",
+    no: "2",
+    title: "집 주소가 사업장 주소로 공개돼 있다",
+    body: "자택 겸 사업장인 개인사업자는 집 주소가 사실상 공개되는 것과 같습니다. 원치 않는 방문과 신변 안전 문제로 이어질 수 있습니다.",
+    img: "/onepager/pain-2.png",
+    alt: "기업정보 사이트에 개인사업자의 상호·대표자·사업장 주소가 게시된 화면",
+    w: 895,
+    h: 942,
   },
   {
-    icon: "📊",
-    title: "매출·재무 추정치",
-    body: "부정확한 매출·직원 수 추정치가 공개되어 거래처 협상, 대출 심사, 경쟁사 분석에 불리하게 작용할 수 있습니다.",
+    no: "3",
+    title: "공개한 적 없는데 조회 사이트에 다 나와 있다",
+    body: "대표자 이름, 연락처, 설립일, 직원 수까지. 검색 한 번이면 누구나 확인할 수 있어 영업 전화와 스팸에 그대로 노출됩니다.",
+    img: "/onepager/pain-3.png",
+    alt: "기업 조회 사이트에 법인의 기업 개요와 연락처가 정리되어 게시된 화면",
+    w: 1270,
+    h: 1136,
   },
   {
-    icon: "🔁",
-    title: "지워도 다시 올라옵니다",
-    body: "한 번 삭제해도 데이터가 갱신되면 재수집되어 다시 게시됩니다. 개별 대응으로는 끝나지 않는 싸움입니다.",
+    no: "4",
+    title: "AI에게 물어봐도 내 매출이 답으로 나온다",
+    body: "ChatGPT·Gemini 같은 AI는 조회 사이트의 추정치를 그대로 인용해 답합니다. 검색을 거치지 않아도 상호 하나로 매출 순위까지 정리돼 나옵니다.",
+    img: "/onepager/aeo.png",
+    alt: "AI 챗봇이 특정 지역 한의원의 매출 상위 10곳을 표로 답한 화면",
+    w: 1096,
+    h: 762,
   },
 ] as const;
 
+/** Browser-window frame for evidence screenshots. */
+function Shot({
+  src,
+  alt,
+  width,
+  height,
+  className = "",
+  urlLabel,
+  dark = false,
+  flush = false,
+}: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  className?: string;
+  urlLabel?: string;
+  dark?: boolean;
+  flush?: boolean;
+}) {
+  return (
+    <div
+      className={`overflow-hidden ${
+        flush ? "border-b" : "rounded-xl border"
+      } ${dark ? "border-line-dark bg-dark" : "border-line bg-white"} ${className}`}
+    >
+      <div
+        className={`flex items-center gap-1.5 border-b px-3 py-2 ${
+          dark ? "border-line-dark bg-dark-2" : "border-line bg-paper"
+        }`}
+      >
+        <span className={`h-2 w-2 rounded-full ${dark ? "bg-cream/20" : "bg-ink/15"}`} />
+        <span className={`h-2 w-2 rounded-full ${dark ? "bg-cream/20" : "bg-ink/15"}`} />
+        <span className={`h-2 w-2 rounded-full ${dark ? "bg-cream/20" : "bg-ink/15"}`} />
+        {urlLabel && (
+          <span
+            className={`ml-2 truncate rounded-md px-2 py-0.5 font-mono text-[10px] ${
+              dark ? "bg-dark text-cream-mute" : "bg-white text-mute"
+            }`}
+          >
+            {urlLabel}
+          </span>
+        )}
+      </div>
+      <div className="aspect-[16/10] overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes="(min-width: 1024px) 560px, 100vw"
+          quality={85}
+          className="h-full w-full scale-[1.01] object-cover object-top"
+        />
+      </div>
+    </div>
+  );
+}
+
 function Problem() {
   return (
-    <section id="problem" className="relative py-24 sm:py-32">
+    <section id="problem" className="relative bg-paper py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <p className="text-sm font-semibold text-sky-400">왜 필요한가요</p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-snug tracking-tight sm:text-4xl">
-            내 동의 없이, 내 사업 정보는
-            <br className="hidden sm:block" /> 이미 공개되어 있습니다
+          <Eyebrow>왜 필요한가요</Eyebrow>
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
+            이런 적, 없으세요?
           </h2>
           <p className="mt-5 max-w-2xl leading-relaxed text-mute">
             수많은 기업정보 사이트가 공공 데이터와 웹 수집 정보를 조합해
-            사업자의 정보를 게시하고 있습니다. 문제는 대부분의 사업자가 이
-            사실조차 모른다는 것, 그리고 알아도 사이트마다 다른 절차 때문에
-            직접 지우기가 매우 번거롭다는 것입니다.
+            사업자의 정보를 게시하고 있습니다. 대부분의 사업자가 이 사실조차
+            모르고, 알아도 사이트마다 다른 절차 때문에 직접 지우기가 어렵습니다.
           </p>
         </Reveal>
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2">
           {PROBLEMS.map((p, i) => (
-            <Reveal key={p.title} delay={i * 80}>
-              <div className="card-glass h-full rounded-2xl p-7 transition-colors hover:border-sky-400/30">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-panel-2 text-xl">
-                  {p.icon}
+            <Reveal key={p.no} delay={i * 80} className="h-full">
+              <div className="card flex h-full flex-col overflow-hidden rounded-2xl">
+                <Shot src={p.img} alt={p.alt} width={p.w} height={p.h} flush />
+                <div className="flex flex-1 flex-col px-6 pb-6 pt-5">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent font-mono text-xs font-bold text-white">
+                      {p.no}
+                    </span>
+                    <h3 className="text-lg font-semibold leading-snug">
+                      {p.title}
+                    </h3>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-mute">
+                    {p.body}
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-semibold">{p.title}</h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-mute">
-                  {p.body}
-                </p>
               </div>
             </Reveal>
           ))}
+        </div>
+
+        <Reveal delay={240}>
+          <div className="card-dark mt-6 grid gap-6 rounded-2xl px-7 py-7 sm:grid-cols-[auto_1fr_auto] sm:items-center sm:px-9">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/15">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[#f0a98e]" aria-hidden>
+                <path d="M3 12a9 9 0 0 1 15.5-6.3L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.5 6.3L3 16" /><path d="M3 21v-5h5" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xl font-bold tracking-[-0.02em] sm:text-2xl">
+                그리고, <span className="text-[#f0a98e]">지워도 다시 올라옵니다</span>
+              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-cream-mute sm:text-base">
+                한 번 삭제해도 데이터가 갱신되면 재수집되어 다시 게시됩니다. 개별
+                대응으로는 끝나지 않는 싸움이라서, 언리스트는 삭제한 뒤에도
+                24시간 다시 감시합니다.
+              </p>
+            </div>
+            <a
+              href="#how"
+              className="inline-flex shrink-0 items-center justify-center rounded-full border border-cream/30 px-5 py-2.5 text-sm font-semibold text-cream transition-colors hover:border-cream"
+            >
+              언리스트가 하는 일
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Search & AI                                                         */
+/* ------------------------------------------------------------------ */
+
+type Channel = { name: string; from: number; to: number; note: string; how: string; ai?: boolean };
+
+const CHANNELS: Channel[] = [
+  { name: "기업정보·조회 사이트", from: 2, to: 21, note: "요청 접수 후 수일~3주 · 임시조치는 30일 이내", how: "사이트별 공식 절차 + 법령 근거 요청" },
+  { name: "구글 검색", from: 3, to: 28, note: "오래된 콘텐츠 삭제 요청 수일 · 개인정보 삭제 요청 수일~수주", how: "원천 삭제 후 색인 갱신 요청" },
+  { name: "Bing", from: 1, to: 14, note: "요청 승인 1~7일 후 재수집까지 추가 기간", how: "콘텐츠 삭제 도구 + 재수집 확인" },
+  { name: "네이버", from: 2, to: 7, note: "게시중단 요청 후 임시조치·색인 갱신에 수일", how: "게시중단 요청 서비스" },
+  { name: "ChatGPT · Gemini · AI 개요", from: 7, to: 42, note: "원천과 검색이 정리되면 순차 반영 · 사업자 삭제 요청 병행", how: "인용 근거 제거 + 개인정보 삭제 요청", ai: true },
+];
+
+const SCALE_DAYS = 42;
+
+function SearchAi() {
+  return (
+    <section id="search-ai" className="relative py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <Reveal>
+          <Eyebrow>검색과 AI까지</Eyebrow>
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
+            사이트에서 내려도, 검색과 AI는 한동안 기억합니다
+          </h2>
+          <p className="mt-5 max-w-2xl leading-relaxed text-mute">
+            언리스트는 조회 사이트 비공개에서 끝내지 않습니다. 검색엔진 캐시와
+            색인, AI 답변이 인용하는 근거 페이지까지 채널별 절차로 정리하고,
+            실제로 사라졌는지 확인합니다.
+          </p>
+        </Reveal>
+
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.35fr]">
+          <div className="flex flex-col gap-4">
+            <Reveal delay={60}>
+              <div className="card h-full rounded-2xl p-6">
+                <div className="font-mono text-[11px] font-semibold tracking-wider text-accent">SEO · 검색 캐시</div>
+                <h3 className="mt-2 text-lg font-semibold">검색 결과에서 지웁니다</h3>
+                <p className="mt-2 text-sm leading-relaxed text-mute">
+                  원천 페이지가 내려간 뒤에도 구글·네이버·Bing에는 캐시와 색인이
+                  남습니다. 각 검색엔진의 오래된 콘텐츠 삭제, 개인정보 삭제,
+                  게시중단 절차로 색인 갱신을 요청하고 반영을 확인합니다.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="card-dark h-full rounded-2xl p-6">
+                <div className="font-mono text-[11px] font-semibold tracking-wider text-[#f0a98e]">AEO · AI 인용</div>
+                <h3 className="mt-2 text-lg font-semibold">AI 답변에서도 지웁니다</h3>
+                <p className="mt-2 text-sm leading-relaxed text-cream-mute">
+                  ChatGPT, Gemini, 구글 AI 개요는 검색 색인과 근거 페이지를 따라
+                  답합니다. 인용되는 원천을 먼저 정리하고, 필요하면 OpenAI 등
+                  사업자에 개인정보 삭제 요청을 함께 진행합니다.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={160}>
+            <div className="card h-full rounded-2xl p-6 sm:p-7">
+              <div className="flex items-baseline justify-between">
+                <h3 className="text-sm font-semibold">채널별 반영 소요</h3>
+                <span className="text-[11px] text-mute">요청 후 경과일</span>
+              </div>
+              <div className="mt-5 space-y-4">
+                {CHANNELS.map((c) => (
+                  <div key={c.name}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-sm font-medium">{c.name}</span>
+                      <span className="font-mono text-[11px] text-mute">
+                        {c.from}–{c.to}일{c.ai ? "+" : ""}
+                      </span>
+                    </div>
+                    <div className="relative mt-1.5 h-2 w-full rounded-full bg-paper">
+                      <div
+                        className={`absolute h-2 rounded-full ${c.ai ? "bg-accent" : "bg-ink"}`}
+                        style={{
+                          left: `${(c.from / SCALE_DAYS) * 100}%`,
+                          width: `${((c.to - c.from) / SCALE_DAYS) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="mt-1 text-[11px] leading-snug text-mute">{c.note}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex justify-between border-t border-line pt-2 font-mono text-[10px] text-mute">
+                <span>0</span><span>1주</span><span>2주</span><span>3주</span><span>4주</span><span>5주</span><span>6주</span>
+              </div>
+              <p className="mt-4 text-[11px] leading-relaxed text-mute">
+                각 채널의 공개 정책 기준 통상치이며 사이트와 항목에 따라 다릅니다. 모든 건의 진행 상태는 24시간 감시 대시보드와 월간 리포트로 확인하실 수 있습니다.
+              </p>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -266,48 +446,53 @@ const STEPS = [
   {
     no: "01",
     title: "노출 진단",
-    body: "사업자 정보를 게시 중인 기업정보 사이트를 전수 스캔하고, 어떤 정보가 어디에 노출되어 있는지 한눈에 보이는 진단 리포트를 드립니다.",
+    body: "사업자번호만 주시면 국내 조회 서비스와 구글·네이버·AI까지 전수 스캔해 어디에 떠 있는지 리포트로 보여드립니다.",
+    Mock: DiagnosisMock,
   },
   {
     no: "02",
-    title: "삭제 요청 대행",
-    body: "위임을 받아 각 사이트의 공식 절차와 관련 법령(개인정보 보호법 등)에 근거해 삭제·비공개 처리를 대신 요청하고, 처리 결과를 추적합니다.",
+    title: "원천 비공개",
+    body: "노출된 화면만이 아니라, 그 데이터의 소스와 소스 제공자까지 역추적해 원천에서 비공개 처리합니다.",
+    Mock: SourceBlockMock,
   },
   {
     no: "03",
-    title: "지속 모니터링",
-    body: "삭제 후에도 매달 재노출 여부를 감시합니다. 정보가 다시 게시되면 자동으로 재요청하고, 월간 리포트로 현황을 투명하게 공유합니다.",
+    title: "24시간 재감시",
+    body: "한 번 내린 정보가 다시 올라오는지, 새 조회 서비스가 생기는지 24시간 감시하며 자동으로 다시 막습니다.",
+    Mock: MonitorMock,
   },
 ] as const;
 
 function HowItWorks() {
   return (
     <section id="how" className="relative py-24 sm:py-32">
-      <div
-        className="glow-orb left-[-200px] top-1/3 h-[400px] w-[400px]"
-        style={{ background: "rgb(56 189 248 / 0.08)" }}
-      />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
-        <Reveal className="text-center">
-          <p className="text-sm font-semibold text-sky-400">이용 방법</p>
-          <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold leading-snug tracking-tight sm:text-4xl">
-            신청 한 번이면, 나머지는
-            <br className="hidden sm:block" /> 언리스트가 알아서 합니다
+        <Reveal>
+          <Eyebrow>이용 방법</Eyebrow>
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
+            진행은 3단계
           </h2>
+          <p className="mt-4 max-w-xl leading-relaxed text-mute">
+            에이전트가 각 단계에서 이런 일을 합니다.
+          </p>
         </Reveal>
 
-        <div className="mt-16 grid gap-5 lg:grid-cols-3">
+        <div className="mt-6 divide-y divide-line">
           {STEPS.map((s, i) => (
-            <Reveal key={s.no} delay={i * 100}>
-              <div className="card-glass relative h-full overflow-hidden rounded-2xl p-8">
-                <div className="font-mono text-5xl font-bold text-sky-400/15">
-                  {s.no}
+            <Reveal key={s.no} delay={i * 80}>
+              <div className="grid items-center gap-8 py-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16 lg:py-12">
+                <div>
+                  <div className="font-mono text-xs font-semibold tracking-[0.18em] text-accent">
+                    STEP {s.no}
+                  </div>
+                  <h3 className="mt-3 text-2xl font-bold tracking-[-0.02em] sm:text-3xl">
+                    {s.title}
+                  </h3>
+                  <p className="mt-4 max-w-md leading-relaxed text-mute">
+                    {s.body}
+                  </p>
                 </div>
-                <h3 className="mt-4 text-xl font-semibold">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-mute">
-                  {s.body}
-                </p>
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
+                <s.Mock />
               </div>
             </Reveal>
           ))}
@@ -321,57 +506,20 @@ function HowItWorks() {
 /* Features                                                            */
 /* ------------------------------------------------------------------ */
 
-const FEATURES = [
-  {
-    title: "법적 근거에 기반한 요청",
-    body: "감이 아니라 근거로 요청합니다. 개인정보 보호법, 정보통신망법 등 관련 법령과 각 사이트의 처리 방침에 맞춘 공식 요청서를 작성합니다.",
-  },
-  {
-    title: "월간 투명 리포트",
-    body: "무엇을 요청했고 어디까지 처리됐는지, 매달 리포트로 받아보세요. 진행 상황을 숨기지 않습니다.",
-  },
-  {
-    title: "재노출 자동 감지",
-    body: "삭제된 정보가 다시 수집·게시되면 자동으로 감지하고 재요청합니다. 구독 기간 동안 보호가 유지됩니다.",
-  },
-  {
-    title: "데이터 최소 수집 원칙",
-    body: "정보를 지우는 회사가 정보를 쌓아둘 수는 없습니다. 대행에 필요한 최소한의 정보만 받고, 해지 시 파기합니다.",
-  },
-  {
-    title: "전담 매니저 배정",
-    body: "챗봇이 아닌 사람이 응대합니다. 처리 현황이 궁금할 때 언제든 전담 매니저에게 문의하세요.",
-  },
-  {
-    title: "신규 사이트 지속 추가",
-    body: "새로운 기업정보 사이트가 생기면 모니터링 대상에 계속 추가됩니다. 추가 비용 없이 보호 범위가 넓어집니다.",
-  },
-] as const;
-
 function Features() {
   return (
-    <section id="features" className="relative py-24 sm:py-32">
+    <section id="features" className="relative bg-paper py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <p className="text-sm font-semibold text-sky-400">서비스 특징</p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-snug tracking-tight sm:text-4xl">
+          <Eyebrow>서비스 특징</Eyebrow>
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
             믿고 맡길 수 있도록 설계했습니다
           </h2>
+          <p className="mt-4 max-w-xl leading-relaxed text-mute">
+            항목을 눌러 실제 근거와 화면을 확인하세요.
+          </p>
         </Reveal>
-
-        <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
-            <Reveal key={f.title} delay={(i % 3) * 80} className="h-full">
-              <div className="h-full bg-panel p-7 transition-colors hover:bg-panel-2">
-                <div className="h-1.5 w-8 rounded-full bg-gradient-to-r from-sky-400 to-indigo-500" />
-                <h3 className="mt-5 text-base font-semibold">{f.title}</h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-mute">
-                  {f.body}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <FeaturesExplorer />
       </div>
     </section>
   );
@@ -384,42 +532,31 @@ function Features() {
 function Pricing() {
   return (
     <section id="pricing" className="relative py-24 sm:py-32">
-      <div
-        className="glow-orb right-[-160px] top-1/4 h-[380px] w-[380px]"
-        style={{ background: "rgb(99 102 241 / 0.1)" }}
-      />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
-        <Reveal className="text-center">
-          <p className="text-sm font-semibold text-sky-400">요금제</p>
-          <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold leading-snug tracking-tight sm:text-4xl">
-            커피 몇 잔 값으로, 내 정보를 지키세요
+        <Reveal className="flex flex-col items-center text-center">
+          <Eyebrow>요금제</Eyebrow>
+          <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
+            부담 없이 시작하고, 필요하면 지속 감시로.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-mute">
-            아래 요금은 출시 예정 가격이며, 사전 등록 고객에게는 얼리버드
-            할인가가 우선 안내됩니다.
-          </p>
         </Reveal>
 
         <div className="mx-auto mt-14 grid max-w-4xl gap-5 lg:grid-cols-2">
           <Reveal delay={0}>
-            <div className="card-glass h-full rounded-2xl p-8">
-              <h3 className="text-lg font-semibold">스탠다드</h3>
-              <p className="mt-1.5 text-sm text-mute">
-                개인사업자 1인을 위한 기본 보호
-              </p>
-              <div className="mt-6 flex items-baseline gap-1.5">
-                <span className="font-mono text-4xl font-bold">₩29,000</span>
-                <span className="text-sm text-mute">/ 월 (예정)</span>
+            <div className="card h-full rounded-2xl p-8">
+              <h3 className="text-lg font-semibold">1회 클린업</h3>
+              <p className="mt-1.5 text-sm text-mute">지금 떠 있는 정보를 한 번에 정리</p>
+              <div className="mt-6 flex items-baseline gap-1">
+                <span className="font-mono text-4xl font-bold tracking-tight">9,900</span>
+                <span className="text-base font-semibold">원</span>
               </div>
               <ul className="mt-7 space-y-3 text-sm text-mute">
-                <PriceItem>주요 기업정보 사이트 노출 스캔</PriceItem>
-                <PriceItem>삭제·비공개 요청 대행</PriceItem>
-                <PriceItem>월 1회 모니터링 및 리포트</PriceItem>
-                <PriceItem>재노출 시 자동 재요청</PriceItem>
+                <PriceItem>전수 스캔</PriceItem>
+                <PriceItem>비공개 요청</PriceItem>
+                <PriceItem>반영 확인</PriceItem>
               </ul>
               <a
                 href="#contact"
-                className="mt-8 block rounded-full border border-line py-3 text-center text-sm font-semibold transition-colors hover:border-sky-400/50"
+                className="mt-8 block rounded-full border border-ink/20 py-3 text-center text-sm font-semibold text-ink transition-colors hover:border-ink"
               >
                 사전 등록하기
               </a>
@@ -427,41 +564,37 @@ function Pricing() {
           </Reveal>
 
           <Reveal delay={100}>
-            <div className="relative h-full rounded-2xl bg-gradient-to-b from-sky-400/40 to-indigo-500/40 p-px">
-              <div className="h-full rounded-2xl bg-panel-2 p-8">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">프로</h3>
-                  <span className="rounded-full bg-sky-400/15 px-3 py-1 text-xs font-semibold text-sky-300">
-                    추천
-                  </span>
-                </div>
-                <p className="mt-1.5 text-sm text-mute">
-                  법인·공동대표 등 폭넓은 보호가 필요할 때
-                </p>
-                <div className="mt-6 flex items-baseline gap-1.5">
-                  <span className="font-mono text-4xl font-bold">₩59,000</span>
-                  <span className="text-sm text-mute">/ 월 (예정)</span>
-                </div>
-                <ul className="mt-7 space-y-3 text-sm text-mute">
-                  <PriceItem>스탠다드의 모든 기능 포함</PriceItem>
-                  <PriceItem>대표자 최대 3인 동시 보호</PriceItem>
-                  <PriceItem>월 2회 모니터링 및 우선 처리</PriceItem>
-                  <PriceItem>전담 매니저 1:1 응대</PriceItem>
-                </ul>
-                <a
-                  href="#contact"
-                  className="mt-8 block rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 py-3 text-center text-sm font-semibold text-night transition-transform hover:scale-[1.02]"
-                >
-                  사전 등록하기
-                </a>
+            <div className="card-dark relative h-full rounded-2xl p-8">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">지속 모니터링</h3>
+                <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white">
+                  추천
+                </span>
               </div>
+              <p className="mt-1.5 text-sm text-cream-mute">내린 정보가 다시 올라오지 않도록</p>
+              <div className="mt-6 flex items-baseline gap-1">
+                <span className="text-base font-semibold text-cream-mute">월</span>
+                <span className="ml-1 font-mono text-4xl font-bold tracking-tight">4,900</span>
+                <span className="text-base font-semibold">원</span>
+              </div>
+              <ul className="mt-7 space-y-3 text-sm text-cream-mute">
+                <PriceItem tone="cream">재스캔</PriceItem>
+                <PriceItem tone="cream">신규 노출 자동 차단</PriceItem>
+                <PriceItem tone="cream">월간 리포트</PriceItem>
+              </ul>
+              <a
+                href="#contact"
+                className="mt-8 block rounded-full bg-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+              >
+                사전 등록하기
+              </a>
             </div>
           </Reveal>
         </div>
 
         <Reveal delay={150}>
           <p className="mt-8 text-center text-xs text-mute">
-            표기 요금은 준비 중인 가격으로, 정식 출시 시 변경될 수 있습니다.
+            기본 진단 기준 · 노출 범위·플랫폼 수에 따라 상이할 수 있습니다.
           </p>
         </Reveal>
       </div>
@@ -469,11 +602,19 @@ function Pricing() {
   );
 }
 
-function PriceItem({ children }: { children: React.ReactNode }) {
+function PriceItem({
+  children,
+  tone = "ink",
+}: {
+  children: React.ReactNode;
+  tone?: "ink" | "cream";
+}) {
   return (
     <li className="flex items-start gap-2.5">
       <svg
-        className="mt-0.5 h-4 w-4 shrink-0 text-sky-400"
+        className={`mt-0.5 h-4 w-4 shrink-0 ${
+          tone === "cream" ? "text-cream" : "text-accent"
+        }`}
         viewBox="0 0 16 16"
         fill="none"
         stroke="currentColor"
@@ -499,7 +640,7 @@ const FAQS = [
   },
   {
     q: "삭제까지 얼마나 걸리나요?",
-    a: "사이트별 처리 절차에 따라 통상 수일에서 수 주가 소요됩니다. 모든 요청 건의 진행 상태는 월간 리포트와 전담 매니저를 통해 확인하실 수 있습니다.",
+    a: "사이트마다 다릅니다. 기업정보·조회 사이트는 요청 접수 후 통상 수일에서 2~3주 안에 비공개 처리되며, 정보통신망법상 임시조치는 최대 30일 이내에 결정됩니다.\n\n검색엔진은 원천 페이지가 내려간 뒤 색인이 갱신되어야 사라집니다. 구글은 오래된 콘텐츠 삭제 요청이 통상 수일, 개인정보 삭제 요청은 수일에서 수 주가 걸리고, Bing은 요청 승인에 1~7일 뒤 재수집까지 기간이 더 필요합니다. 네이버는 게시중단 요청 뒤 임시조치와 색인 갱신에 수일이 소요됩니다.\n\nChatGPT·Gemini·구글 AI 개요 같은 AI 답변은 검색 색인과 근거 페이지를 따라가므로 원천과 검색이 정리되면 순차적으로 반영되고, 필요하면 OpenAI 등 사업자에 개인정보 삭제 요청도 함께 진행합니다. 모든 건의 진행 상태는 24시간 감시 대시보드와 월간 리포트로 확인하실 수 있습니다.",
   },
   {
     q: "어떤 정보를 제공해야 하나요?",
@@ -511,17 +652,17 @@ const FAQS = [
   },
   {
     q: "법인 사업자도 이용할 수 있나요?",
-    a: "네. 다만 법인은 법령상 공시 의무가 있는 정보의 범위가 넓어, 삭제 가능한 항목이 개인사업자와 다를 수 있습니다. 프로 플랜에서 법인 맞춤 진단을 제공합니다.",
+    a: "네, 가능합니다. 법인은 상법 제317조에 따라 대표자 성명과 주소 등이 등기되고 상업등기법 제10조로 누구나 열람할 수 있어, 등기·공시처럼 법령이 공개를 정한 항목은 원천 삭제가 제한될 수 있습니다.\n\n하지만 실제로 불편을 겪는 노출은 대부분 그 바깥에 있습니다. 조회 사이트가 재가공해 게시한 대표자 연락처와 이메일, 추정 매출과 직원 수, 검색·AI 답변에 인용된 요약은 법인도 개인정보 보호법과 정보통신망법 제44조의2에 근거해 비공개를 요청할 수 있고 실제로 처리됩니다.\n\n진단 단계에서 항목별 처리 가능 여부를 먼저 보여드리니, 법인이라도 우선 신청해 노출 현황부터 확인해 보시길 권합니다.",
   },
 ] as const;
 
 function Faq() {
   return (
-    <section id="faq" className="relative py-24 sm:py-32">
+    <section id="faq" className="relative bg-paper py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
-        <Reveal className="text-center">
-          <p className="text-sm font-semibold text-sky-400">FAQ</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        <Reveal className="flex flex-col items-center text-center">
+          <Eyebrow>FAQ</Eyebrow>
+          <h2 className="mt-4 text-3xl font-bold tracking-[-0.025em] sm:text-4xl">
             자주 묻는 질문
           </h2>
         </Reveal>
@@ -529,10 +670,10 @@ function Faq() {
         <div className="mt-12 space-y-3">
           {FAQS.map((item, i) => (
             <Reveal key={item.q} delay={i * 60}>
-              <details className="faq card-glass group rounded-2xl px-6 py-5">
+              <details className="faq card group rounded-2xl px-6 py-5">
                 <summary className="flex items-center justify-between gap-4 text-base font-semibold">
                   {item.q}
-                  <span className="faq-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line text-sky-400">
+                  <span className="faq-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink/20 text-ink">
                     <svg
                       width="12"
                       height="12"
@@ -546,9 +687,11 @@ function Faq() {
                     </svg>
                   </span>
                 </summary>
-                <p className="mt-4 text-sm leading-relaxed text-mute">
-                  {item.a}
-                </p>
+                <div className="mt-4 space-y-3 text-sm leading-relaxed text-mute">
+                  {item.a.split("\n\n").map((para) => (
+                    <p key={para.slice(0, 24)}>{para}</p>
+                  ))}
+                </div>
               </details>
             </Reveal>
           ))}
@@ -567,19 +710,20 @@ function Contact() {
     <section id="contact" className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <div className="card-glass relative overflow-hidden rounded-3xl px-6 py-16 text-center sm:px-12 sm:py-20">
-            <div
-              className="glow-orb left-1/2 top-[-120px] h-[280px] w-[560px] -translate-x-1/2"
-              style={{ background: "rgb(56 189 248 / 0.18)" }}
-            />
+          <div className="card-dark relative overflow-hidden rounded-3xl px-6 py-16 text-center sm:px-12 sm:py-20">
             <div className="relative">
-              <h2 className="mx-auto max-w-2xl text-3xl font-bold leading-snug tracking-tight sm:text-4xl">
+              <div className="mx-auto flex justify-center">
+                <Token size={40} tone="white" />
+              </div>
+              <h2 className="mx-auto mt-8 max-w-2xl text-3xl font-bold leading-snug tracking-[-0.025em] sm:text-4xl">
                 내 정보가 어디에 노출되어 있는지,
                 <br className="hidden sm:block" />
-                <span className="gradient-text">무료로 진단</span>해
-                드리겠습니다
+                <span className="carve-text carve-text--dark">
+                  무료로 진단
+                </span>
+                해 드리겠습니다
               </h2>
-              <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-mute sm:text-base">
+              <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-cream-mute sm:text-base">
                 사전 등록 고객에게는 출시 시 무료 노출 진단 리포트와 얼리버드
                 할인 혜택을 가장 먼저 안내드립니다. 아래 이메일로 상호명과
                 연락처를 보내주세요.
@@ -587,11 +731,11 @@ function Contact() {
               <div className="mt-9 flex flex-col items-center gap-4">
                 <a
                   href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%20%EC%82%AC%EC%A0%84%20%EB%93%B1%EB%A1%9D%20%EC%8B%A0%EC%B2%AD"
-                  className="rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 px-8 py-4 text-sm font-semibold text-night shadow-lg shadow-sky-500/25 transition-transform hover:scale-[1.03]"
+                  className="rounded-full bg-accent px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
                 >
                   이메일로 사전 등록하기
                 </a>
-                <span className="font-mono text-sm text-mute">
+                <span className="font-mono text-sm text-cream-mute">
                   contact@unlist.kr
                 </span>
               </div>
@@ -612,19 +756,17 @@ function Footer() {
     <footer className="border-t border-line py-12">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 px-5 sm:flex-row sm:items-center sm:px-8">
         <div>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 text-xs font-bold text-night">
-              U
-            </span>
-            <span className="font-bold">언리스트 UNLIST</span>
+          <div className="flex items-center gap-3">
+            <Token size={26} />
+            <WordmarkKr height={22} />
           </div>
-          <p className="mt-3 max-w-md text-xs leading-relaxed text-mute">
+          <p className="mt-4 max-w-md text-xs leading-relaxed text-mute">
             언리스트는 현재 서비스 출시를 준비하며 사전 등록을 받고 있습니다.
             본 페이지의 서비스 구성과 요금은 출시 시점에 변경될 수 있습니다.
           </p>
         </div>
         <div className="text-xs text-mute">
-          <p>contact@unlist.kr</p>
+          <p className="font-mono">contact@unlist.kr</p>
           <p className="mt-2">
             © {new Date().getFullYear()} Unlist. All rights reserved.
           </p>
