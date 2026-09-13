@@ -115,6 +115,7 @@ function Hero() {
             width={896}
             height={555}
             urlLabel="google.com › 성형외과 매출"
+            priority
           />
           <p className="mt-2 text-[11px] text-mute">실제 검색 화면. 개인정보는 흐림 처리했습니다.</p>
         </div>
@@ -146,6 +147,7 @@ function EvidenceStack() {
           width={896}
           height={555}
           urlLabel="google.com › 성형외과 매출"
+          priority
           className="shadow-[0_40px_80px_-40px_rgba(30,26,23,0.45)]"
         />
       </div>
@@ -220,6 +222,7 @@ function Shot({
   urlLabel,
   dark = false,
   flush = false,
+  priority = false,
 }: {
   src: string;
   alt: string;
@@ -229,6 +232,7 @@ function Shot({
   urlLabel?: string;
   dark?: boolean;
   flush?: boolean;
+  priority?: boolean;
 }) {
   return (
     <div
@@ -262,6 +266,7 @@ function Shot({
           height={height}
           sizes="(min-width: 1024px) 560px, 100vw"
           quality={85}
+          priority={priority}
           className="h-full w-full scale-[1.01] object-cover object-top"
         />
       </div>
