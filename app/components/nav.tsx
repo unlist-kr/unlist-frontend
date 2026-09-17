@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Token, Wordmark } from "./brand";
+import { useApply } from "./apply-modal";
 
 const LINKS = [
   { href: "#problem", label: "왜 필요한가요" },
@@ -14,6 +15,7 @@ const LINKS = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { open: openApply } = useApply();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -47,12 +49,13 @@ export default function Nav() {
         </ul>
 
         <div className="hidden md:block">
-          <a
-            href="#contact"
+          <button
+            type="button"
+            onClick={() => openApply("diagnosis")}
             className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-dark-2"
           >
-            사전 등록
-          </a>
+            무료 진단 신청
+          </button>
         </div>
 
         <button
@@ -95,13 +98,16 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <a
-            href="#contact"
-            onClick={() => setOpen(false)}
-            className="mt-4 block rounded-full bg-ink py-2.5 text-center text-sm font-semibold text-white"
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              openApply("diagnosis");
+            }}
+            className="mt-4 block w-full rounded-full bg-ink py-2.5 text-center text-sm font-semibold text-white"
           >
-            사전 등록
-          </a>
+            무료 진단 신청
+          </button>
         </div>
       )}
     </header>

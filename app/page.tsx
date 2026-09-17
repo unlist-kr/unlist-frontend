@@ -3,10 +3,12 @@ import Nav from "./components/nav";
 import Reveal from "./components/reveal";
 import { Token, WordmarkKr } from "./components/brand";
 import FeaturesExplorer from "./components/features";
+import { ApplyProvider, ApplyButton } from "./components/apply-modal";
 import { DiagnosisMock, SourceBlockMock, MonitorMock } from "./components/step-mocks";
 
 export default function Home() {
   return (
+    <ApplyProvider>
     <div id="top" className="relative flex flex-1 flex-col overflow-x-clip">
       <Nav />
       <main className="flex-1">
@@ -21,6 +23,7 @@ export default function Home() {
       </main>
       <Footer />
     </div>
+    </ApplyProvider>
   );
 }
 
@@ -56,7 +59,7 @@ function Hero() {
             style={{ animationDelay: "0ms" }}
           >
             <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-accent" />
-            사전 등록 접수 중 · 얼리버드 혜택
+            무료 노출 진단 접수 중 · 1회 클린업 9,900원
           </div>
 
           <h1
@@ -83,9 +86,9 @@ function Hero() {
             className="animate-hero mt-9 flex flex-col gap-3 sm:flex-row"
             style={{ animationDelay: "300ms" }}
           >
-            <a href="#contact" className={BTN_PRIMARY}>
+            <ApplyButton mode="diagnosis" className={BTN_PRIMARY}>
               무료 노출 진단 신청하기
-            </a>
+            </ApplyButton>
             <a href="#problem" className={BTN_SECONDARY}>
               실제 노출 화면 보기
             </a>
@@ -564,12 +567,12 @@ function Pricing() {
                 <PriceItem tone="cream">비공개 요청</PriceItem>
                 <PriceItem tone="cream">반영 확인</PriceItem>
               </ul>
-              <a
-                href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%201%ED%9A%8C%20%ED%81%B4%EB%A6%B0%EC%97%85%20%EC%8B%A0%EC%B2%AD"
-                className="mt-8 block rounded-full bg-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+              <ApplyButton
+                mode="cleanup"
+                className="mt-8 block w-full rounded-full bg-accent py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
               >
                 지금 신청하기
-              </a>
+              </ApplyButton>
               <p className="mt-3 text-center text-[11px] text-cream-mute">
                 이메일 접수 후 계좌이체로 결제 · 진단 리포트 먼저 드립니다
               </p>
@@ -596,12 +599,12 @@ function Pricing() {
                 <PriceItem>신규 노출 자동 차단</PriceItem>
                 <PriceItem>월간 리포트</PriceItem>
               </ul>
-              <a
-                href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%20%EC%A7%80%EC%86%8D%20%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%20%EC%B6%9C%EC%8B%9C%20%EC%95%8C%EB%A6%BC"
-                className="mt-8 block rounded-full border border-ink/20 py-3 text-center text-sm font-semibold text-ink transition-colors hover:border-ink"
+              <ApplyButton
+                mode="waitlist"
+                className="mt-8 block w-full rounded-full border border-ink/20 py-3 text-center text-sm font-semibold text-ink transition-colors hover:border-ink"
               >
                 출시 알림 받기
-              </a>
+              </ApplyButton>
               <p className="mt-3 text-center text-[11px] text-mute">
                 1회 클린업 고객에게 출시 시 얼리버드 가격으로 먼저 안내합니다
               </p>
@@ -741,17 +744,17 @@ function Contact() {
                 해 드리겠습니다
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-cream-mute sm:text-base">
-                사전 등록 고객에게는 출시 시 무료 노출 진단 리포트와 얼리버드
-                할인 혜택을 가장 먼저 안내드립니다. 아래 이메일로 상호명과
-                연락처를 보내주세요.
+                상호명과 연락처를 이메일로 보내주시면 어디에 무엇이 노출되어
+                있는지 진단 리포트를 무료로 드립니다. 리포트를 보고 1회 클린업
+                진행 여부를 결정하세요. 지속 모니터링은 출시 시 먼저 안내드립니다.
               </p>
               <div className="mt-9 flex flex-col items-center gap-4">
-                <a
-                  href="mailto:contact@unlist.kr?subject=%5B%EC%96%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8%5D%20%EC%82%AC%EC%A0%84%20%EB%93%B1%EB%A1%9D%20%EC%8B%A0%EC%B2%AD"
+                <ApplyButton
+                  mode="diagnosis"
                   className="rounded-full bg-accent px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
                 >
-                  이메일로 사전 등록하기
-                </a>
+                  무료 진단 신청하기
+                </ApplyButton>
                 <span className="font-mono text-sm text-cream-mute">
                   contact@unlist.kr
                 </span>
@@ -778,8 +781,9 @@ function Footer() {
             <WordmarkKr height={22} />
           </div>
           <p className="mt-4 max-w-md text-xs leading-relaxed text-mute">
-            언리스트는 현재 서비스 출시를 준비하며 사전 등록을 받고 있습니다.
-            본 페이지의 서비스 구성과 요금은 출시 시점에 변경될 수 있습니다.
+            언리스트는 무료 노출 진단과 1회 클린업을 먼저 제공하고, 지속
+            모니터링은 출시를 준비하고 있습니다. 서비스 구성과 요금은 변경될 수
+            있습니다.
           </p>
         </div>
         <div className="text-xs text-mute">
