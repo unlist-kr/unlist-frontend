@@ -242,6 +242,13 @@ function ApplyDialog({ mode, onClose }: { mode: ApplyMode; onClose: () => void }
             noValidate
           >
             <p className="text-sm leading-relaxed text-mute">{copy.lead}</p>
+            {/* honeypot: hidden from users and assistive tech; bots tend to fill it */}
+            <div aria-hidden className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+              <label>
+                website
+                <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+              </label>
+            </div>
 
             {/* STEP 1 — contact (kept mounted so values survive step change) */}
             <div className={step === 1 ? "mt-5 space-y-4" : "hidden"}>

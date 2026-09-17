@@ -4,9 +4,10 @@ import { Resend } from "resend";
 /*
   POST /api/apply — receives the application modal (multipart/form-data)
   and forwards it by email with the business-registration file attached.
+  Abuse controls: same-origin check, per-IP rate limit (5 / 10 min, per instance), honeypot.
 
   Env:
-    RESEND_API_KEY   — if missing, the submission is logged and accepted (dev)
+    RESEND_API_KEY   — required in production (503 without it); dev logs a redacted line and accepts
     APPLY_TO_EMAIL   — recipient (default contact@unlist.kr)
     APPLY_FROM_EMAIL — verified sender (default onboarding@resend.dev)
 */
@@ -23,18 +24,70 @@ const MODE_LABEL: Record<string, string> = {
   waitlist: "지속 모니터링 출시 알림",
 };
 
+/* --- abuse controls -------------------------------------------------- */
+
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 5;
+const hits = new Map<string, number[]>(); // per-instance; fine for a single-region MVP
+
+function clientIp(request: Request) {
+  const xff = request.headers.get("x-forwarded-for");
+  return (xff?.split(",")[0] ?? request.headers.get("x-real-ip") ?? "unknown").trim();
+}
+
+function rateLimited(ip: string) {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) hits.clear(); // crude memory guard
+  return recent.length > RATE_MAX;
+}
+
+function sameOrigin(request: Request) {
+  const site = request.headers.get("sec-fetch-site");
+  if (site && site !== "same-origin" && site !== "none") return false;
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (origin && host) {
+    try {
+      if (new URL(origin).host !== host) return false;
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+
+const mask = (v: string, keep = 2) =>
+  v.length <= keep ? "*".repeat(v.length) : v.slice(0, keep) + "*".repeat(Math.max(3, v.length - keep));
+const maskEmail = (v: string) => {
+  const [u, d] = v.split("@");
+  return `${mask(u ?? "", 1)}@${d ?? ""}`;
+};
+
 function str(fd: FormData, key: string) {
   const v = fd.get(key);
   return typeof v === "string" ? v.trim() : "";
 }
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: "허용되지 않은 요청입니다." }, { status: 403 });
+  }
+  if (rateLimited(clientIp(request))) {
+    return NextResponse.json({ ok: false, error: "요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요." }, { status: 429 });
+  }
+
   let fd: FormData;
   try {
     fd = await request.formData();
   } catch {
     return NextResponse.json({ ok: false, error: "잘못된 요청입니다." }, { status: 400 });
   }
+
+  // Honeypot: real users never fill this field.
+  if (str(fd, "website")) return NextResponse.json({ ok: true, delivered: false });
 
   const mode = str(fd, "mode");
   const name = str(fd, "name");
@@ -82,7 +135,16 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.log("[apply] RESEND_API_KEY not set — logging submission only\n" + lines.join("\n"));
+    if (process.env.NODE_ENV === "production") {
+      console.error("[apply] RESEND_API_KEY missing in production — refusing submission");
+      return NextResponse.json(
+        { ok: false, error: "접수 시스템 점검 중입니다. contact@unlist.kr 로 직접 보내주세요." },
+        { status: 503 },
+      );
+    }
+    console.log(
+      `[apply] dev fallback (no RESEND_API_KEY) — ${MODE_LABEL[mode]} · ${mask(name, 1)} · ${mask(phone, 3)} · ${maskEmail(email)} · ${company || "-"} · file=${attachment ? "yes" : "no"} · poa=${consentPoa}`,
+    );
     return NextResponse.json({ ok: true, delivered: false });
   }
 
